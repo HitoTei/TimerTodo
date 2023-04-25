@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -17,21 +18,19 @@ import androidx.compose.ui.tooling.preview.Preview
 @Preview
 @Composable
 fun TodoCardPrev() {
-    TodoCard(text = "Todo")
+    var checked by remember { mutableStateOf(false)}
+    TodoCard(text = "Todo", checked) {
+        checked = it
+    }
 }
 
 @Composable
-fun TodoCard(text: String) {
-    var checked by rememberSaveable {
-        mutableStateOf(false)
-    }
+fun TodoCard(text: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Checkbox(checked = checked, onCheckedChange = { value ->
-                checked = value
-            })
+            Checkbox(checked = checked, onCheckedChange = onCheckedChange)
             Text(text)
         }
     }
