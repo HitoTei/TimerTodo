@@ -1,4 +1,21 @@
 package com.example.timertodo.ui.task
 
-class TaskViewModel {
+import androidx.lifecycle.ViewModel
+
+class TaskViewModel : ViewModel() {
+    private val _taskList = getTaskList().toMutableList()
+    val taskList: List<Task>
+        get() = _taskList
+
+    fun removeTask(task: Task) {
+        _taskList.remove(task)
+    }
+
+    fun changeTaskChecked(task: Task, checked: Boolean) {
+        _taskList.find { it.id == task.id }?.let {
+            it.checked = checked
+        }
+    }
 }
+
+private fun getTaskList() = List(30) { i -> Task(i, "Task $i", false)}
