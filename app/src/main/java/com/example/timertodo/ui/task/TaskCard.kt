@@ -27,19 +27,19 @@ fun TaskCardPrev() {
     TaskCard(
         modifier = Modifier.fillMaxWidth(),
         text = "Todo",
-        checked,
+        checked = checked,
         onCheckedChange = { checked = it },
-        onClose = { /*TODO*/ }
+        onClose = { /* do nothing */ }
     )
 }
 
 @Composable
 fun TaskCard(
-    modifier: Modifier = Modifier,
     text: String,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(modifier = modifier) {
         Row(

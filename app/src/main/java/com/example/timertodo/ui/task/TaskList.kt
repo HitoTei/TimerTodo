@@ -4,6 +4,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.toMutableStateList
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
 @Preview
@@ -35,8 +36,13 @@ fun TaskListPrev() {
 }
 
 @Composable
-fun TaskList(taskList: List<Task>, onCheckedChange: (Task, Boolean) -> Unit, onCloseTask: (Task) -> Unit) {
-    LazyColumn {
+fun TaskList(
+    taskList: List<Task>,
+    onCheckedChange: (Task, Boolean) -> Unit,
+    onCloseTask: (Task) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    LazyColumn(modifier) {
         items(taskList, key = { it.id }) { task ->
             TaskCard(
                 text = task.text,
