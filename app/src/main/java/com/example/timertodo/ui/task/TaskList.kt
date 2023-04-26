@@ -1,9 +1,11 @@
 package com.example.timertodo.ui.task
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -37,7 +39,8 @@ fun TaskListPrev() {
         },
         onCloseTask = { task ->
             taskLists.remove(task)
-        }
+        },
+        shouldShowCheckedTask = true
     )
 }
 
@@ -48,20 +51,24 @@ fun TaskList(
     onCheckedChange: (Task, Boolean) -> Unit,
     onCloseTask: (Task) -> Unit,
     modifier: Modifier = Modifier,
+    shouldShowCheckedTask: Boolean
 ) {
     LazyColumn(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(vertical = 16.dp)
     ) {
         items(taskList, key = { it.id }) { task ->
-            TaskCard(
-                modifier = Modifier.animateItemPlacement(),
-                text = task.text,
-                checked = task.checked,
-                onCheckedChange = { onCheckedChange(task, it) },
-                onClose = { onCloseTask(task) }
-            )
+            AnimatedVisibility(
+                visible = shouldShowCheckedTask || !task.checked,
+//                modifier = Modifier.animateItemPlacement().padding(vertical = 8.dp)
+            ) {
+                TaskCard(
+                    text = task.text,
+                    checked = task.checked,
+                    onCheckedChange = { onCheckedChange(task, it) },
+                    onClose = { onCloseTask(task) }
+                )
+            }
         }
     }
 }
