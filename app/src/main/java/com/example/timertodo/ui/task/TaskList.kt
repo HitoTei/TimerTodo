@@ -1,5 +1,7 @@
 package com.example.timertodo.ui.task
 
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,6 +11,7 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+
 
 @Preview
 @Composable
@@ -38,6 +41,7 @@ fun TaskListPrev() {
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class) // For Modifier.animateItemPlacement
 @Composable
 fun TaskList(
     taskList: List<Task>,
@@ -46,12 +50,13 @@ fun TaskList(
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
-        modifier,
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(vertical = 16.dp)
     ) {
         items(taskList, key = { it.id }) { task ->
             TaskCard(
+                modifier = Modifier.animateItemPlacement(),
                 text = task.text,
                 checked = task.checked,
                 onCheckedChange = { onCheckedChange(task, it) },
