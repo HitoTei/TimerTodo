@@ -14,5 +14,8 @@ fun TaskScreen(
         onCheckedChange = { task, checked ->
             taskViewModel.changeTaskChecked(task, checked)
         },
+        onCloseTask = { task ->
+            taskViewModel.closeTask(task)
+        }
     )
 }

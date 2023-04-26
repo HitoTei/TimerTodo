@@ -21,21 +21,28 @@ fun TaskListPrev() {
             initialChecked = true
         )
     ).toMutableStateList()
-    TaskList(taskLists, onCheckedChange = { task, checked ->
-        taskLists.find { it.id == task.id }?.let {
-            it.checked = checked
+    TaskList(
+        taskLists,
+        onCheckedChange = { task, checked ->
+            taskLists.find { it.id == task.id }?.let {
+                it.checked = checked
+            }
+        },
+        onCloseTask = { task ->
+            taskLists.remove(task)
         }
-    })
+    )
 }
 
 @Composable
-fun TaskList(taskList: List<Task>, onCheckedChange: (Task, Boolean) -> Unit) {
+fun TaskList(taskList: List<Task>, onCheckedChange: (Task, Boolean) -> Unit, onCloseTask: (Task) -> Unit) {
     LazyColumn {
         items(taskList, key = { it.id }) { task ->
             TaskCard(
                 text = task.text,
                 checked = task.checked,
-                onCheckedChange = { onCheckedChange(task, it) }
+                onCheckedChange = { onCheckedChange(task, it) },
+                onClose = { onCloseTask(task) }
             )
         }
     }

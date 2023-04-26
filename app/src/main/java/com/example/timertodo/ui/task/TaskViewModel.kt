@@ -1,13 +1,14 @@
 package com.example.timertodo.ui.task
 
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 
 class TaskViewModel : ViewModel() {
-    private val _taskList = getTaskList().toMutableList()
+    private val _taskList = getTaskList().toMutableStateList()
     val taskList: List<Task>
         get() = _taskList
 
-    fun removeTask(task: Task) {
+    fun closeTask(task: Task) {
         _taskList.remove(task)
     }
 
