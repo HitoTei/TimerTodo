@@ -60,7 +60,7 @@ fun TaskList(
         items(taskList, key = { it.id }) { task ->
             AnimatedVisibility(
                 visible = shouldShowCheckedTask || !task.checked,
-//                modifier = Modifier.animateItemPlacement().padding(vertical = 8.dp)
+                modifier = Modifier.animateItemPlacement().padding(vertical = 8.dp)
             ) {
                 TaskCard(
                     text = task.text,
