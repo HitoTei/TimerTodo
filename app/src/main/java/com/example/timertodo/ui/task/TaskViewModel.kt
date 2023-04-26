@@ -8,6 +8,12 @@ class TaskViewModel : ViewModel() {
     val taskList: List<Task>
         get() = _taskList
 
+    val uncheckedTaskList: List<Task>
+        get() = _taskList.filter { !it.checked }
+
+    val checkedTaskList: List<Task>
+        get() = _taskList.filter { it.checked }
+
     fun closeTask(task: Task) {
         _taskList.remove(task)
     }

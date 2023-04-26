@@ -7,3 +7,4 @@ import androidx.compose.runtime.setValue
 class Task (val id: Int, val text: String, initialChecked: Boolean) {
     var checked by mutableStateOf(initialChecked)
 }
+
