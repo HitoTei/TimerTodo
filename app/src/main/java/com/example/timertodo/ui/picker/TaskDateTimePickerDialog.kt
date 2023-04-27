@@ -1,38 +1,78 @@
 package com.example.timertodo.ui.picker
 
-import android.app.DatePickerDialog
-import android.app.Dialog
-import android.app.TimePickerDialog
-import android.content.Context
-import java.time.LocalDateTime
 
-fun TaskDatePickerDialog(context: Context, selectedDate: LocalDateTime, onDateChanged: (LocalDateTime) -> Unit): Dialog{
-    return DatePickerDialog(
-        context,
-        { _, year, month, dayOfMonth ->
-            var newDateTime = selectedDate
-            newDateTime = newDateTime.withYear(year)
-            newDateTime = newDateTime.withMonth(month + 1)  // 数字が1つずれているので調整
-            newDateTime = newDateTime.withDayOfMonth(dayOfMonth)
-            onDateChanged(newDateTime)
-        },
-        selectedDate.year,
-        selectedDate.monthValue - 1, // 数字が1つずれているので調整
-        selectedDate.dayOfMonth
+import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberTimePickerState
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZoneOffset
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MyDatePickerDialog(
+    onDismissRequest: () -> Unit,
+    onConfirm: (LocalDate) -> Unit,
+    modifier: Modifier = Modifier,
+    initialLocalDateTime: LocalDate? = null
+) {
+    val state = rememberDatePickerState(
+        initialLocalDateTime?.atStartOfDay()?.toEpochSecond(ZoneOffset.UTC)
     )
+    DatePickerDialog(
+        modifier = modifier,
+        onDismissRequest = onDismissRequest,
+        confirmButton = {
+            Button(onClick = {
+                val localDate = state.selectedDateMillis?.let {
+                    Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
+                }
+                if (localDate != null)
+                    onConfirm(localDate)
+            }) {
+                Text("決定")
+            }
+        }) {
+        DatePicker(state = state)
+    }
 }
 
-fun TaskTimePickerDialog(context: Context, selectedDate: LocalDateTime, onTimeChanged: (LocalDateTime) -> Unit): Dialog{
-    return TimePickerDialog(
-        context,
-        { _, hourOfDay, minute ->
-            var newDate = selectedDate
-            newDate = newDate.withHour(hourOfDay)
-            newDate = newDate.withMinute(minute)
-            onTimeChanged(newDate)
-        },
-        selectedDate.hour,
-        selectedDate.minute,
-        true
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MyTimePickerDialog(
+    onDismissRequest: () -> Unit,
+    onConfirm: (LocalTime) -> Unit,
+    modifier: Modifier = Modifier,
+    initialLocalTime: LocalTime? = null
+) {
+    val state = rememberTimePickerState(
+        initialHour = initialLocalTime?.hour ?: 0,
+        initialMinute = initialLocalTime?.minute ?: 0
     )
+    DatePickerDialog(
+        modifier = modifier,
+        onDismissRequest = onDismissRequest,
+        confirmButton = {
+            Button(onClick = {
+                val localTime = state.let {
+                    LocalTime.of(it.hour, it.minute)
+                }
+                if (localTime != null)
+                    onConfirm(localTime)
+            }) {
+                Text("決定")
+            }
+        }) {
+        TimePicker(state = state)
+    }
 }
