@@ -13,7 +13,7 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 internal fun LocalDateTime.withLocalDate(localDate: LocalDate): LocalDateTime {
-    return withYear(year).withMonth(monthValue).withDayOfMonth(dayOfMonth)
+    return withYear(localDate.year).withMonth(localDate.monthValue).withDayOfMonth(localDate.dayOfMonth)
 }
 
 internal fun LocalDateTime.withLocalTime(localTime: LocalTime): LocalDateTime {
