@@ -9,6 +9,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.timertodo.ui.picker.MyDatePickerDialog
 import com.example.timertodo.ui.picker.MyTimePickerDialog
+import com.example.timertodo.utils.toFormattedLocalDateString
+import com.example.timertodo.utils.toFormattedLocalTimeString
+import com.example.timertodo.utils.withLocalDate
+import com.example.timertodo.utils.withLocalTime
 import java.time.LocalDateTime
 
 @Composable
@@ -24,14 +28,16 @@ fun AddTaskSheet(onConfirmed: (String, LocalDateTime?) -> Unit, onCanceled: () -
             if (dateTime == null) {
                 Text(text = "Date")
             } else {
-                Text(text = "${dateTime!!.year}/${dateTime!!.monthValue}/${dateTime!!.dayOfMonth}")
+                val formattedText = dateTime!!.toFormattedLocalDateString()
+                Text(text = formattedText)
             }
         }
         Button(onClick = { showTimePicker = true }) {
             if (dateTime == null) {
                 Text(text = "Time")
             } else {
-                Text(text = "${dateTime!!.hour}:${dateTime!!.minute}")
+                val formattedText = dateTime!!.toFormattedLocalTimeString()
+                Text(text = formattedText)
             }
         }
     }
@@ -54,15 +60,14 @@ fun AddTaskSheet(onConfirmed: (String, LocalDateTime?) -> Unit, onCanceled: () -
     if (showDatePicker) MyDatePickerDialog(
         onDismissRequest = { showDatePicker = false },
         onConfirm = {
-            dateTime = (dateTime ?: LocalDateTime.now()).withYear(it.year)
-                .withMonth(it.monthValue)
-                .withDayOfMonth(it.dayOfMonth)
+            dateTime = (dateTime ?: LocalDateTime.now()).withLocalDate(it)
+            it.atStartOfDay()
         }
     )
     if (showTimePicker) MyTimePickerDialog(
         onDismissRequest = { showTimePicker = false },
         onConfirm = {
-            dateTime = (dateTime ?: LocalDateTime.now()).withHour(it.hour).withMinute(it.minute)
+            dateTime = (dateTime ?: LocalDateTime.now()).withLocalTime(it)
         }
     )
 }

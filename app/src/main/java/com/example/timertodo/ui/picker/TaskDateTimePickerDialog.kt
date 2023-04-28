@@ -11,11 +11,12 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.example.timertodo.utils.toDatePickerState
+import com.example.timertodo.utils.toTimePickerState
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
-import java.time.ZoneOffset
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,9 +26,7 @@ fun MyDatePickerDialog(
     modifier: Modifier = Modifier,
     initialLocalDateTime: LocalDate? = null
 ) {
-    val state = rememberDatePickerState(
-        initialLocalDateTime?.atStartOfDay()?.toEpochSecond(ZoneOffset.UTC)
-    )
+    val state = initialLocalDateTime?.toDatePickerState() ?: rememberDatePickerState()
     DatePickerDialog(
         modifier = modifier,
         onDismissRequest = onDismissRequest,
@@ -61,10 +60,7 @@ fun MyTimePickerDialog(
     modifier: Modifier = Modifier,
     initialLocalTime: LocalTime? = null
 ) {
-    val state = rememberTimePickerState(
-        initialHour = initialLocalTime?.hour ?: 0,
-        initialMinute = initialLocalTime?.minute ?: 0
-    )
+    val state = initialLocalTime?.toTimePickerState() ?: rememberTimePickerState()
     DatePickerDialog(
         modifier = modifier,
         onDismissRequest = onDismissRequest,

@@ -34,8 +34,11 @@ fun TaskScreen(
     val scope = rememberCoroutineScope()
     val scaffoldState =
         rememberBottomSheetScaffoldState(
+            // BUG: skipHiddenState, skipPartiallyExpandedをtrueにすると、再起動時にクラッシュする
+            // TODO: bottomSheet以外を使うことを検討
             bottomSheetState = SheetState(
-                skipPartiallyExpanded = true,
+                skipHiddenState = false,
+                skipPartiallyExpanded = false,
                 initialValue = SheetValue.Hidden
             )
         )
