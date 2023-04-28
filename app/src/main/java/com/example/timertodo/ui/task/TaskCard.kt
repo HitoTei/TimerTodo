@@ -1,6 +1,7 @@
 package com.example.timertodo.ui.task
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
@@ -36,6 +37,7 @@ fun TaskCardPrev() {
 @Composable
 fun TaskCard(
     text: String,
+    timeLimit: String? = null,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     onClose: () -> Unit,
@@ -47,9 +49,12 @@ fun TaskCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(checked = checked, onCheckedChange = onCheckedChange)
-                Text(text)
+            Column {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(checked = checked, onCheckedChange = onCheckedChange)
+                    Text(text)
+                }
+                if(timeLimit != null) Text(text = timeLimit)
             }
             IconButton(onClick = {
                 onClose()

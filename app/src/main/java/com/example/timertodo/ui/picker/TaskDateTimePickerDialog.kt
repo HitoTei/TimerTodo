@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import java.time.Instant
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZoneOffset
@@ -39,10 +38,17 @@ fun MyDatePickerDialog(
                 }
                 if (localDate != null)
                     onConfirm(localDate)
+                onDismissRequest()
             }) {
                 Text("決定")
             }
-        }) {
+        },
+        dismissButton = {
+            Button(onClick = onDismissRequest) {
+                Text("キャンセル")
+            }
+        }
+    ) {
         DatePicker(state = state)
     }
 }
@@ -62,6 +68,7 @@ fun MyTimePickerDialog(
     DatePickerDialog(
         modifier = modifier,
         onDismissRequest = onDismissRequest,
+
         confirmButton = {
             Button(onClick = {
                 val localTime = state.let {
@@ -69,10 +76,17 @@ fun MyTimePickerDialog(
                 }
                 if (localTime != null)
                     onConfirm(localTime)
+                onDismissRequest()
             }) {
                 Text("決定")
             }
-        }) {
+        },
+        dismissButton = {
+            Button(onClick = onDismissRequest) {
+                Text("キャンセル")
+            }
+        }
+    ) {
         TimePicker(state = state)
     }
 }

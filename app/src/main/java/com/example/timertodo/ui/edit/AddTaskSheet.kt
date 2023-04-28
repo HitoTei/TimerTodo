@@ -1,52 +1,68 @@
-package com.example.timertodo.ui.edit
-
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.timertodo.ui.picker.TaskDatePickerDialog
-import com.example.timertodo.ui.picker.TaskTimePickerDialog
+import com.example.timertodo.ui.picker.MyDatePickerDialog
+import com.example.timertodo.ui.picker.MyTimePickerDialog
 import java.time.LocalDateTime
 
-@OptIn(ExperimentalMaterial3Api::class) // For TextField
-@Preview
 @Composable
-fun AddTaskScreen() {
-//    var value by remember { mutableStateOf("") }
-//
-//    TextField(
-//        value = value,
-//        onValueChange = {value = it},
-//        label = { Text("タスク") },
-//        placeholder = { Text("タスクを入力してください") },
-//        singleLine = true,
-//        maxLines = 1,
-//        modifier = Modifier.fillMaxWidth()
-//    )
+fun AddTaskSheet(onConfirmed: (String, LocalDateTime?) -> Unit, onCanceled: () -> Unit){
+    var text by remember { mutableStateOf("") }
+    var showDatePicker by remember { mutableStateOf(false) }
+    var showTimePicker by remember { mutableStateOf(false) }
+    var dateTime by remember { mutableStateOf<LocalDateTime?>(null) }
+    TextField(value = text, onValueChange = { text = it })
+    Row {
 
-    var selectedDateTime by remember { mutableStateOf(LocalDateTime.now()) }
-    val context = LocalContext.current
-    Column {
-        TextButton(onClick = {
-            TaskDatePickerDialog(context, selectedDateTime) {
-                selectedDateTime = it
-            }.show()
-        }) {
-            Text(text = "${selectedDateTime.year}/${selectedDateTime.monthValue}/${selectedDateTime.dayOfMonth}")
+        Button(onClick = { showDatePicker = true }) {
+            if (dateTime == null) {
+                Text(text = "Date")
+            } else {
+                Text(text = "${dateTime!!.year}/${dateTime!!.monthValue}/${dateTime!!.dayOfMonth}")
+            }
         }
-        TextButton(onClick = {
-            TaskTimePickerDialog(context, selectedDateTime) {
-                selectedDateTime = it
-            }.show()
-        }) {
-            Text(text = "${selectedDateTime.hour}:${selectedDateTime.minute}")
+        Button(onClick = { showTimePicker = true }) {
+            if (dateTime == null) {
+                Text(text = "Time")
+            } else {
+                Text(text = "${dateTime!!.hour}:${dateTime!!.minute}")
+            }
         }
     }
+    Row {
+        Button(onClick = {
+            onCanceled()
+            text = ""
+            dateTime = null
+        }) {
+            Text(text = "Cancel")
+        }
+        Button(onClick = {
+            onConfirmed(text, dateTime)
+            text = ""
+            dateTime = null
+        }) {
+            Text(text = "OK")
+        }
+    }
+    if (showDatePicker) MyDatePickerDialog(
+        onDismissRequest = { showDatePicker = false },
+        onConfirm = {
+            dateTime = (dateTime ?: LocalDateTime.now()).withYear(it.year)
+                .withMonth(it.monthValue)
+                .withDayOfMonth(it.dayOfMonth)
+        }
+    )
+    if (showTimePicker) MyTimePickerDialog(
+        onDismissRequest = { showTimePicker = false },
+        onConfirm = {
+            dateTime = (dateTime ?: LocalDateTime.now()).withHour(it.hour).withMinute(it.minute)
+        }
+    )
 }

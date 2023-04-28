@@ -23,6 +23,10 @@ class TaskViewModel : ViewModel() {
             it.checked = checked
         }
     }
+
+    fun addTask(task: Task) {
+        _taskList.add(task)
+    }
 }
 
 private fun getTaskList() = List(30) { i -> Task(i, "Task $i", false)}

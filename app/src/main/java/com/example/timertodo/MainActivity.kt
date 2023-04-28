@@ -1,5 +1,6 @@
 package com.example.timertodo
 
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -25,6 +26,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainApp() {
     TimerTodoTheme {
+
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
@@ -33,3 +35,5 @@ fun MainApp() {
         }
     }
 }
+
+
