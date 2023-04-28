@@ -41,6 +41,6 @@ internal fun LocalTime.toTimePickerState(): TimePickerState{
 @Composable
 internal fun LocalDate.toDatePickerState(): DatePickerState {
     return rememberDatePickerState(
-        atStartOfDay().toEpochSecond(ZoneOffset.UTC)
+        atStartOfDay().toEpochSecond(ZoneOffset.UTC) * 1000
     )
 }
