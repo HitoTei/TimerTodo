@@ -1,13 +1,16 @@
-package com.example.timertodo.ui.task
+package com.example.timertodo.utils
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.time.LocalDateTime
 import java.util.UUID
 
+@Entity(tableName = "task")
 class Task(
-    val id: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int,
     val text: String,
     initialChecked: Boolean = false,
     val timeLimit: LocalDateTime? = null
@@ -18,6 +21,6 @@ class Task(
         text: String,
         initialChecked: Boolean = false,
         timeLimit: LocalDateTime? = null
-    ) : this(UUID.randomUUID().hashCode(), text, initialChecked, timeLimit)
+    ) : this(0, text, initialChecked, timeLimit)
 }
 

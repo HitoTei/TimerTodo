@@ -17,19 +17,22 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.timertodo.RoomApplication
+import com.example.timertodo.utils.Task
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(heightDp = 800)
 @Composable
 fun TaskScreen(
-    taskViewModel: TaskViewModel = viewModel()
+    taskViewModel: TaskViewModel = viewModel(), // TODO: repositoryをDIする
+    onGotoEditTask: (Task) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val scaffoldState =
@@ -42,11 +45,12 @@ fun TaskScreen(
                 initialValue = SheetValue.Hidden
             )
         )
+
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
         topBar = {
             TopAppBar(
-                title = { Text(text = "TimerTodo") },
+                title = { Text(text = "hogehoge") },
                 actions = {
                     Icon(
                         imageVector = Icons.Default.Add,
@@ -95,9 +99,13 @@ fun TaskScreen(
             modifier = Modifier
                 .fillMaxHeight()
         ) {
+            val taskList by taskViewModel.taskList.collectAsState(initial = emptyList())
             TaskList(
-                checkedTaskList = taskViewModel.checkedTaskList,
-                uncheckedTaskList = taskViewModel.uncheckedTaskList,
+                onGotoEditTask = { task ->
+                    onGotoEditTask(task)
+                },
+                checkedTaskList = taskViewModel.checkedTaskList(taskList),
+                uncheckedTaskList = taskViewModel.uncheckedTaskList(taskList),
                 onCheckedChange = { task, checked ->
                     taskViewModel.changeTaskChecked(task, checked)
                 },

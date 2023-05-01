@@ -3,6 +3,7 @@ package com.example.timertodo.ui.task
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,12 +25,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-
+import com.example.timertodo.utils.Task
 
 
 @OptIn(ExperimentalFoundationApi::class) // For Modifier.animateItemPlacement
 @Composable
 fun TaskList(
+    onGotoEditTask: (Task) -> Unit,
     checkedTaskList: List<Task>,
     uncheckedTaskList: List<Task>,
     onCheckedChange: (Task, Boolean) -> Unit,
@@ -45,14 +47,16 @@ fun TaskList(
         contentPadding = PaddingValues(vertical = 16.dp)
     ) {
         items(uncheckedTaskList, key = { it.id }) { task ->
-            TaskCard(
+            Box(modifier = Modifier.clickable {
+                onGotoEditTask(task)
+            }){TaskCard(
                 modifier = Modifier.animateItemPlacement(),
                 text = task.text,
                 timeLimit= task.timeLimit?.toString(),
                 checked = task.checked,
                 onCheckedChange = { onCheckedChange(task, it) },
                 onClose = { onCloseTask(task) }
-            )
+            )}
         }
         items(1){
             Row(
@@ -111,6 +115,7 @@ fun TaskListPrev() {
         )
     )
     TaskList(
+        onGotoEditTask = {},
         uncheckedTaskList = uncheckedTaskList,
         checkedTaskList = checkedTaskList,
         onCheckedChange = { task, checked ->

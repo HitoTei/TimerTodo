@@ -1,32 +1,42 @@
 package com.example.timertodo.ui.task
 
-import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.timertodo.data.TaskRepository
+import com.example.timertodo.utils.Task
+import kotlinx.coroutines.launch
 
-class TaskViewModel : ViewModel() {
-    private val _taskList = getTaskList().toMutableStateList()
-    val taskList: List<Task>
-        get() = _taskList
+class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
+    val taskList = repository.getAll()
+    fun uncheckedTaskList(taskList: List<Task>): List<Task>
+         = taskList.filter { !it.checked }
 
-    val uncheckedTaskList: List<Task>
-        get() = _taskList.filter { !it.checked }
-
-    val checkedTaskList: List<Task>
-        get() = _taskList.filter { it.checked }
+    fun checkedTaskList(taskList: List<Task>): List<Task>
+         = taskList.filter { it.checked }
 
     fun closeTask(task: Task) {
-        _taskList.remove(task)
+        viewModelScope.launch {
+            repository.delete(task)
+        }
     }
 
     fun changeTaskChecked(task: Task, checked: Boolean) {
-        _taskList.find { it.id == task.id }?.let {
-            it.checked = checked
+        viewModelScope.launch {
+            task.checked = checked
+            repository.update(task)
         }
     }
 
     fun addTask(task: Task) {
-        _taskList.add(task)
+        viewModelScope.launch {
+            repository.insert(task)
+        }
     }
-}
 
-private fun getTaskList() = List(30) { i -> Task(i, "Task $i", false)}
+    fun editTask(task: Task) {
+        viewModelScope.launch {
+            repository.update(task)
+        }
+    }
+
+}
