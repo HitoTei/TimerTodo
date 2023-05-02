@@ -20,22 +20,20 @@ import com.example.timertodo.ui.theme.TimerTodoTheme
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.timertodo.data.TaskRepository
 import com.example.timertodo.data.TaskRepositoryImpl
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val dao = RoomApplication.database.taskDao()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MainApp(TaskRepositoryImpl(dao))
+            MainApp()
         }
     }
 }
 
 @Composable
-fun MainApp(
-    repository: TaskRepository,
-    viewModel: MainViewModel = viewModel()
-) {
+fun MainApp() {
     val navController = rememberNavController()
     TimerTodoTheme {
         Surface(
@@ -53,7 +51,9 @@ fun MainApp(
                         navArgument("id") { type = NavType.IntType }
                     )) { navBackStackEntry ->
                     val id = navBackStackEntry.arguments?.getInt("id") ?: 0
-                    EditTaskScreen(id)
+                    EditTaskScreen(id = id){
+                        navController.popBackStack()
+                    }
                 }
             }
         }

@@ -17,12 +17,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ComposableTarget
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.timertodo.RoomApplication
 import com.example.timertodo.utils.Task
@@ -31,7 +33,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskScreen(
-    taskViewModel: TaskViewModel = viewModel(), // TODO: repositoryをDIする
+    taskViewModel: TaskViewModel = hiltViewModel(), // TODO: repositoryをDIする
     onGotoEditTask: (Task) -> Unit,
 ) {
     val scope = rememberCoroutineScope()

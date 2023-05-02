@@ -4,15 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.timertodo.data.TaskRepository
 import com.example.timertodo.utils.Task
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
+@HiltViewModel
+class TaskViewModel @Inject constructor(private val repository: TaskRepository) : ViewModel() {
     val taskList = repository.getAll()
-    fun uncheckedTaskList(taskList: List<Task>): List<Task>
-         = taskList.filter { !it.checked }
+    fun uncheckedTaskList(taskList: List<Task>): List<Task> = taskList.filter { !it.checked }
 
-    fun checkedTaskList(taskList: List<Task>): List<Task>
-         = taskList.filter { it.checked }
+    fun checkedTaskList(taskList: List<Task>): List<Task> = taskList.filter { it.checked }
 
     fun closeTask(task: Task) {
         viewModelScope.launch {
