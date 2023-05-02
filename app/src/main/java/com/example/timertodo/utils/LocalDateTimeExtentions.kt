@@ -20,6 +20,10 @@ internal fun LocalDateTime.withLocalTime(localTime: LocalTime): LocalDateTime {
     return withHour(localTime.hour).withMinute(localTime.minute)
 }
 
+internal fun LocalDateTime.toFormattedLocalDateTimeString(): String{
+    return this.format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm"))
+}
+
 internal fun LocalDateTime.toFormattedLocalDateString(): String {
     return this.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
 }

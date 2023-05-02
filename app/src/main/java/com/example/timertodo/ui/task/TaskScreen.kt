@@ -11,31 +11,37 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.SheetValue
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ComposableTarget
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.timertodo.RoomApplication
 import com.example.timertodo.utils.Task
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskScreen(
-    taskViewModel: TaskViewModel = hiltViewModel(), // TODO: repositoryをDIする
+    modifier: Modifier = Modifier,
+    taskViewModel: TaskViewModel = hiltViewModel(),
     onGotoEditTask: (Task) -> Unit,
 ) {
+
     val scope = rememberCoroutineScope()
     val scaffoldState =
         rememberBottomSheetScaffoldState(
@@ -49,7 +55,16 @@ fun TaskScreen(
         )
 
     BottomSheetScaffold(
+        modifier = modifier,
         scaffoldState = scaffoldState,
+        snackbarHost = { hostState ->
+            SnackbarHost(hostState) { snackbarData ->
+                Snackbar(
+                    snackbarData,
+                    containerColor = MaterialTheme.colorScheme.secondary
+                )
+            }
+        },
         topBar = {
             TopAppBar(
                 title = { Text(text = "hogehoge") },
@@ -65,7 +80,11 @@ fun TaskScreen(
                                 }
                             }
                     )
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
             )
         },
         sheetContent = {

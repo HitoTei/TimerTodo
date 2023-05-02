@@ -1,6 +1,9 @@
 package com.example.timertodo.ui.picker
 
 
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -11,6 +14,7 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.example.timertodo.utils.toDatePickerState
 import com.example.timertodo.utils.toTimePickerState
 import java.time.Instant
@@ -39,12 +43,12 @@ fun MyDatePickerDialog(
                     onConfirm(localDate)
                 onDismissRequest()
             }) {
-                Text("決定")
+                Text("OK")
             }
         },
         dismissButton = {
             Button(onClick = onDismissRequest) {
-                Text("キャンセル")
+                Text("CANCEL")
             }
         }
     ) {
@@ -74,15 +78,18 @@ fun MyTimePickerDialog(
                     onConfirm(localTime)
                 onDismissRequest()
             }) {
-                Text("決定")
+                Text("OK")
             }
         },
         dismissButton = {
             Button(onClick = onDismissRequest) {
-                Text("キャンセル")
+                Text("CANCEL")
             }
         }
     ) {
-        TimePicker(state = state)
+        TimePicker(
+            modifier = Modifier.fillMaxWidth().padding(10.dp),
+            state = state
+        )
     }
 }
