@@ -41,6 +41,7 @@ fun TaskTile(
     modifier: Modifier = Modifier,
     text: String,
     timeLimit: String? = null,
+    timeLeft: String? = null,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     onClose: () -> Unit,
@@ -62,10 +63,19 @@ fun TaskTile(
                 Checkbox(checked = checked, onCheckedChange = onCheckedChange)
                 Text(text)
             }
-            if (timeLimit != null) Text(
-                modifier = Modifier.padding(start = 50.dp),
-                text = timeLimit
-            )
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                if (timeLimit != null) Text(
+                    modifier = Modifier.padding(start = 50.dp),
+                    text = "期限：$timeLimit"
+                )
+                if (timeLeft != null) Text(
+                    modifier = Modifier.padding(start = 50.dp),
+                    text = "残り：$timeLeft"
+                )
+            }
         }
         IconButton(onClick = {
             onClose()

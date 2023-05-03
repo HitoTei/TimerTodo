@@ -1,3 +1,4 @@
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -7,13 +8,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ShapeDefaults
-import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -124,7 +122,6 @@ fun AddTaskSheet(onConfirmed: (String, LocalDateTime?) -> Unit, onCanceled: () -
             onDismissRequest = { showDatePicker = false },
             onConfirm = {
                 dateTime = (dateTime ?: LocalDateTime.now()).withLocalDate(it)
-                it.atStartOfDay()
             }
         )
         if (showTimePicker) MyTimePickerDialog(

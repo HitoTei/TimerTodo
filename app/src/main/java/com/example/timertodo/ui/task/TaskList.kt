@@ -15,14 +15,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,7 +33,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.timertodo.utils.Task
 import com.example.timertodo.utils.toFormattedLocalDateTimeString
-import com.example.timertodo.utils.toFormattedLocalTimeString
+import java.time.Duration
+import java.time.LocalDateTime
 
 
 @OptIn(ExperimentalFoundationApi::class) // For Modifier.animateItemPlacement
@@ -45,6 +45,7 @@ fun TaskList(
     uncheckedTaskList: List<Task>,
     onCheckedChange: (Task, Boolean) -> Unit,
     onCloseTask: (Task) -> Unit,
+    currentTime: LocalDateTime,
     modifier: Modifier = Modifier
 ) {
     var showCheckedTask by remember {
@@ -63,7 +64,8 @@ fun TaskList(
                 task = task,
                 onGotoEditTask = onGotoEditTask,
                 onCheckedChange = onCheckedChange,
-                onCloseTask =onCloseTask,
+                onCloseTask = onCloseTask,
+                currentTime = currentTime
             )
         }
         items(1) {
@@ -94,7 +96,8 @@ fun TaskList(
                 task = task,
                 onGotoEditTask = onGotoEditTask,
                 onCheckedChange = onCheckedChange,
-                onCloseTask =onCloseTask,
+                onCloseTask = onCloseTask,
+                currentTime = currentTime
             )
         }
     }
@@ -105,10 +108,21 @@ fun TaskList(
 fun TaskListTile(
     modifier: Modifier,
     task: Task,
+    currentTime: LocalDateTime,
     onGotoEditTask: (Task) -> Unit,
     onCheckedChange: (Task, Boolean) -> Unit,
     onCloseTask: (Task) -> Unit
 ) {
+    val timeLeft by remember(currentTime) {
+        derivedStateOf {
+            val timeLimit = task.timeLimit ?: return@derivedStateOf null
+            val timeLeft = Duration.between(currentTime, timeLimit)
+            val hours = String.format("%04d", timeLeft.toHours())
+            val minutes = String.format("%02d", timeLeft.toMinutes() % 60)
+            val seconds = String.format("%02d", timeLeft.seconds % 60)
+            "$hours 時間 $minutes 分 $seconds 秒"
+        }
+    }
     Box(modifier = Modifier.clickable {
         onGotoEditTask(task)
     }) {
@@ -117,6 +131,7 @@ fun TaskListTile(
                 modifier = modifier,
                 text = task.text,
                 timeLimit = task.timeLimit?.toFormattedLocalDateTimeString(),
+                timeLeft = timeLeft,
                 checked = task.checked,
                 onCheckedChange = { onCheckedChange(task, it) },
                 onClose = { onCloseTask(task) }
@@ -164,6 +179,7 @@ fun TaskListPrev() {
         },
         onCloseTask = { task ->
             uncheckedTaskList.remove(task)
-        }
+        },
+        currentTime = LocalDateTime.now()
     )
 }

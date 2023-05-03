@@ -18,21 +18,24 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.timertodo.utils.Task
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,11 +45,19 @@ fun TaskScreen(
     onGotoEditTask: (Task) -> Unit,
 ) {
 
+    var currentTime by remember {
+        mutableStateOf(LocalDateTime.now())
+    }
+    LaunchedEffect(Unit) {
+        while (true) {
+            currentTime = LocalDateTime.now()
+            delay(1000)
+        }
+    }
+
     val scope = rememberCoroutineScope()
     val scaffoldState =
         rememberBottomSheetScaffoldState(
-            // BUG: skipHiddenState, skipPartiallyExpandedをtrueにすると、再起動時にクラッシュする
-            // TODO: bottomSheet以外を使うことを検討
             bottomSheetState = SheetState(
                 skipHiddenState = false,
                 skipPartiallyExpanded = false,
@@ -132,7 +143,11 @@ fun TaskScreen(
                 },
                 onCloseTask = {
                     taskViewModel.closeTask(it)
-                }
+                    scope.launch {
+                        scaffoldState.snackbarHostState.showSnackbar("Closed ${it.text}")
+                    }
+                },
+                currentTime = currentTime
             )
         }
     }

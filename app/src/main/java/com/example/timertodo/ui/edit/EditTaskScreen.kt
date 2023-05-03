@@ -16,9 +16,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,10 +28,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.timertodo.utils.toDatePickerState
 import com.example.timertodo.utils.toTimePickerState
+import java.time.Instant
 import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,6 +48,7 @@ fun EditTaskScreen(
         editTaskViewModel.task
     }
     val task = taskState
+
     if (task == null) {
         Box(
             modifier = modifier.fillMaxSize(),
@@ -56,6 +59,8 @@ fun EditTaskScreen(
     } else {
         var text by remember { mutableStateOf(task.text) }
         var timeLimit by remember { mutableStateOf<LocalDateTime?>(task.timeLimit) }
+        val datePickerState = timeLimit?.toLocalDate()?.toDatePickerState() ?: rememberDatePickerState()
+        val timePickerState = timeLimit?.toLocalTime()?.toTimePickerState() ?: rememberTimePickerState()
         Column(
             modifier = modifier
                 .verticalScroll(state = rememberScrollState())
@@ -89,6 +94,14 @@ fun EditTaskScreen(
                 Button(
                     modifier = Modifier.padding(8.dp),
                     onClick = {
+                        if (timeLimit != null) {
+                            val time = timePickerState.let { LocalTime.of(it.hour, it.minute) }
+                            val date = datePickerState.let {
+                                Instant.ofEpochMilli(it.selectedDateMillis ?: 0)
+                                    .atZone(ZoneId.systemDefault()).toLocalDate()
+                            }
+                            timeLimit = LocalDateTime.of(date, time)
+                        }
                         editTaskViewModel.saveTask(text, timeLimit)
                         onSaveClicked()
                     },
@@ -100,11 +113,11 @@ fun EditTaskScreen(
             if (timeLimit != null) {
                 Column {
                     DatePicker(
-                        state = timeLimit!!.toLocalDate().toDatePickerState(),
+                        state = datePickerState,
                         modifier = Modifier.fillMaxWidth()
                     )
                     TimePicker(
-                        state = timeLimit!!.toLocalTime().toTimePickerState(),
+                        state = timePickerState,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }

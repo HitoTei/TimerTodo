@@ -13,15 +13,17 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 internal fun LocalDateTime.withLocalDate(localDate: LocalDate): LocalDateTime {
-    return withYear(localDate.year).withMonth(localDate.monthValue).withDayOfMonth(localDate.dayOfMonth)
+    return withYear(localDate.year).withMonth(localDate.monthValue)
+        .withDayOfMonth(localDate.dayOfMonth)
 }
 
 internal fun LocalDateTime.withLocalTime(localTime: LocalTime): LocalDateTime {
     return withHour(localTime.hour).withMinute(localTime.minute)
 }
 
-internal fun LocalDateTime.toFormattedLocalDateTimeString(): String{
-    return this.format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm"))
+internal fun LocalDateTime.toFormattedLocalDateTimeString(showSeconds: Boolean = false): String {
+    val pattern = if (showSeconds) "yyyy/MM/dd HH:mm:ss" else "yyyy/MM/dd HH:mm"
+    return this.format(DateTimeFormatter.ofPattern(pattern))
 }
 
 internal fun LocalDateTime.toFormattedLocalDateString(): String {
@@ -34,7 +36,7 @@ internal fun LocalDateTime.toFormattedLocalTimeString(): String {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun LocalTime.toTimePickerState(): TimePickerState{
+internal fun LocalTime.toTimePickerState(): TimePickerState {
     return rememberTimePickerState(
         initialHour = hour,
         initialMinute = minute
